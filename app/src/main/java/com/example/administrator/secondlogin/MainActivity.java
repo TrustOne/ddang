@@ -397,6 +397,7 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
     private void display3(int number) {
         TextView displayInteger = (TextView) findViewById(
                 R.id.integer_number3);
+        int i;
         displayInteger.setText("" + number);
     }
 
