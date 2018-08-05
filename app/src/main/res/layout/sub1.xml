@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/child_linear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_P_QUNTITY"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingRight="1dp"
+            android:text="상품번호"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tv_P_NAME"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLength="12"
+            android:paddingRight="5dp"
+            android:text="상품명"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tv_P_PRICE"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:text="00000" />
+
+        <TextView
+            android:id="@+id/tv_P_QUNTITY2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:text="0개" />
+
+        <Button
+            android:id="@+id/btn_cart_delete"
+            android:layout_width="57dp"
+            android:layout_height="35dp"
+            android:text="삭제"
+
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
