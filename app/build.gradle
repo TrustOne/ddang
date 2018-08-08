@@ -34,9 +34,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:15.0.1'
     compile 'com.google.firebase:firebase-firestore:15.0.0'
 
-
-
-
     //   compile files('libs/naveridlogin_android_sdk_4.2.0.aar')
 
 

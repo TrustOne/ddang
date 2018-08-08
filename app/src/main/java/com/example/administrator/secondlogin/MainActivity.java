@@ -350,7 +350,7 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
     public void credit(View view) {
         Intent intent = new Intent(MainActivity.this, creditActivity.class);
 // intent.putExtra("key", listContent[position]);
-        System.out.println("first11101");
+
         startActivity(intent);
 
     }
@@ -391,13 +391,14 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
 
     }public void decreaseInteger3(View view) {
         minteger3 = minteger3 - 1;
+
         display3(minteger3);
     }
 
     private void display3(int number) {
         TextView displayInteger = (TextView) findViewById(
                 R.id.integer_number3);
-        int i;
+
         displayInteger.setText("" + number);
     }
 
@@ -414,6 +415,12 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
         TextView displayInteger = (TextView) findViewById(
                 R.id.integer_number4);
         displayInteger.setText("" + number);
+    }
+
+    public void Comment1_click(View view) {
+        Intent intent = new Intent(MainActivity.this, Comment_Activity_1.class);
+// intent.putExtra("key", listContent[position]);
+        startActivity(intent);
     }
 ///////
 
