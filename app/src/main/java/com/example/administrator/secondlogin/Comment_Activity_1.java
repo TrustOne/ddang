@@ -7,22 +7,47 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.icu.text.SimpleDateFormat;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Comment_Activity_1 extends Activity {
     private final int GALLERY_CODE=1112;
     private final int MY_PERMISSIONS_REQUEST_READ_EXT_STORAGE = 1113;
-
+    FirebaseUser currentUser;
+    private FirebaseAuth mAuth;
+    FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,5 +189,78 @@ public class Comment_Activity_1 extends Activity {
             // other 'case' lines to check for other
             // permissions this app might request
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void upload(View view) {
+        System.out.println("upload Method123");
+        ImageView imageView = (ImageView)findViewById(R.id.imageView);
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssFFF");
+        final String getTime = sdf.format(date);
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference mountainsRef = storageRef.child("user_store/Trustone_store/comment/"+getTime+"_"+currentUser.getUid());
+
+        imageView.setDrawingCacheEnabled(true);
+        imageView.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = mountainsRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                System.out.println("upload fail123");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+                System.out.println("upload success123");
+                EditText edittext = (EditText)findViewById(R.id.editText);
+                String s_edit = edittext.getText().toString();
+                db = FirebaseFirestore.getInstance();
+
+
+                db.collection("user_cart").document(currentUser.getUid()).collection(currentUser.getUid())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @RequiresApi(api = Build.VERSION_CODES.N)
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+
+                                    if(task.getResult().isEmpty()) {
+                                        Map<String, Object> data = new HashMap<>();
+                                        data.put("TIME", getTime);
+                                        data.put("P_ID", "117");
+                                        data.put("P_PRICE", "16000");
+                                        data.put("P_NAME", "스와브로스키 사파이어 넥클리스 보급형");
+
+
+                                        db.collection("user_cart").document(currentUser.getUid()).collection(currentUser.getUid())
+                                                .add(data);
+                                    }
+
+                                }
+                            }
+                        });
+
+
+            }
+        });
+
+
+
     }
 }
