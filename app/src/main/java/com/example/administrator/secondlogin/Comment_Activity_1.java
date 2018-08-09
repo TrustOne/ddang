@@ -19,6 +19,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +30,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -38,9 +41,12 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 public class Comment_Activity_1 extends Activity {
     private final int GALLERY_CODE=1112;
@@ -48,10 +54,41 @@ public class Comment_Activity_1 extends Activity {
     FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     FirebaseFirestore db;
+    StorageReference storageRef;
+    FirebaseStorage storage;
+
+    ArrayList<Comment> al = new ArrayList<Comment>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment__1);
+        db = FirebaseFirestore.getInstance();
+        final String comment;
+        int img;
+        db.collection("user_store").document("TrustOne").collection("Comment")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+
+
+                            }
+                        } else {
+                      //      Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+     //   storage = FirebaseStorage.getInstance();
+     //   storageRef = storage.getReference();
+     //   StorageReference pathReference = storageRef.child("user_store/Trustone_store/comment");
+
+
+
     }
 
     public void image_click(View view) {
@@ -205,7 +242,7 @@ public class Comment_Activity_1 extends Activity {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        StorageReference mountainsRef = storageRef.child("user_store/Trustone_store/comment/"+getTime+"_"+currentUser.getUid());
+        final StorageReference mountainsRef = storageRef.child("user_store/Trustone_store/comment/"+getTime+"_"+currentUser.getUid());
 
         imageView.setDrawingCacheEnabled(true);
         imageView.buildDrawingCache();
@@ -231,28 +268,24 @@ public class Comment_Activity_1 extends Activity {
                 String s_edit = edittext.getText().toString();
                 db = FirebaseFirestore.getInstance();
 
+                Map<String, Object> data = new HashMap<>();
+                data.put("TIME", getTime);
+                data.put("UID", currentUser.getUid());
+                data.put("COMMENT", s_edit);
+                data.put("PHOTO", mountainsRef.getPath());
 
-                db.collection("user_cart").document(currentUser.getUid()).collection(currentUser.getUid())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @RequiresApi(api = Build.VERSION_CODES.N)
+                db.collection("user_store").document("TrustOne").collection("Comment")
+                        .add(data)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-
-                                    if(task.getResult().isEmpty()) {
-                                        Map<String, Object> data = new HashMap<>();
-                                        data.put("TIME", getTime);
-                                        data.put("P_ID", "117");
-                                        data.put("P_PRICE", "16000");
-                                        data.put("P_NAME", "스와브로스키 사파이어 넥클리스 보급형");
-
-
-                                        db.collection("user_cart").document(currentUser.getUid()).collection(currentUser.getUid())
-                                                .add(data);
-                                    }
-
-                                }
+                            public void onSuccess(DocumentReference documentReference) {
+                       //         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                          //      Log.w(TAG, "Error adding document", e);
                             }
                         });
 
@@ -263,4 +296,24 @@ public class Comment_Activity_1 extends Activity {
 
 
     }
+}
+
+class Comment { // 자바빈
+    String comment = "";
+    String time = "";
+    String uid = "";
+    int img; // 이미지
+    public Comment(String comment, String time, String uid, int img) {
+        this.comment = comment;
+        this.time = time;
+        this.uid = uid;
+        this.img = img;
+    }
+    //이미지 없을떄
+    public Comment(String comment, String time, String uid) {
+        this.comment = comment;
+        this.time = time;
+        this.uid = uid;
+    }
+    public Comment() {} // 기본생성자 : 생성자 작업시 함께 추가하자
 }
