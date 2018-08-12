@@ -1,6 +1,7 @@
 package com.example.administrator.secondlogin;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -20,10 +21,18 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,6 +67,8 @@ public class Comment_Activity_1 extends Activity {
     FirebaseStorage storage;
 
     ArrayList<Comment> al = new ArrayList<Comment>();
+    public RequestManager mGlideRequestManager;
+
 
 
     @Override
@@ -67,6 +78,10 @@ public class Comment_Activity_1 extends Activity {
         db = FirebaseFirestore.getInstance();
         final String comment;
         int img;
+        mGlideRequestManager = Glide.with(this);
+        System.out.println("0809_1");
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
         db.collection("user_store").document("TrustOne").collection("Comment")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -75,7 +90,8 @@ public class Comment_Activity_1 extends Activity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
-
+                                al.add(new Comment((String)document.get("COMMENT") ,(String)document.get("TIME"), (String)document.get("UID"),(String)document.get("PHOTO") ));
+                                System.out.println("0809_1.5" + (String)document.get("COMMENT"));
 
                             }
                         } else {
@@ -83,14 +99,69 @@ public class Comment_Activity_1 extends Activity {
                         }
                     }
                 });
-     //   storage = FirebaseStorage.getInstance();
-     //   storageRef = storage.getReference();
+
+
      //   StorageReference pathReference = storageRef.child("user_store/Trustone_store/comment");
-
-
-
+        System.out.println("0809_2");
+    MyAdapter adapter = new MyAdapter(
+            getApplicationContext(),
+            R.layout.listview_layout,
+            al);
+        ListView lv = (ListView)findViewById(R.id.listview);
+        lv.setAdapter(adapter);
+        System.out.println("0809_3");
+    }
+///////
+class MyAdapter extends BaseAdapter {
+    Context context;
+    int layout;
+    ArrayList<Comment> al;
+    LayoutInflater inf;
+    public MyAdapter(Context context, int layout, ArrayList<Comment> al) {
+        this.context = context;
+        this.layout = layout;
+        this.al = al;
+        this.inf = (LayoutInflater) context.getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+    }
+    @Override
+    public int getCount() { // 총 데이터의 개수
+        return al.size();
+    }
+    @Override
+    public Object getItem(int position) { // 해당 행의 데이터
+        return al.get(position);
+    }
+    @Override
+    public long getItemId(int position) { // 해당 행의 유니크한 id
+        return position;
     }
 
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        if (convertView == null)
+            convertView = inf.inflate(layout, null);
+
+
+        TextView tv2 = (TextView) convertView.findViewById(R.id.tv_comment_list);
+        ImageView iv = (ImageView) convertView.findViewById(R.id.imageView_list);
+
+        Comment s = al.get(position);
+
+        tv2.setText(s.comment);
+        System.out.println("0809_8"+s.comment+s.img);
+        StorageReference pathReference = storageRef.child(s.img);
+        //iv.setImageResource(Integer.parseInt(s.img.toString()));
+        mGlideRequestManager
+                .using(new FirebaseImageLoader())
+                .load(pathReference)
+                .into(iv);
+
+        return convertView;
+    }
+}
+//////
     public void image_click(View view) {
         requestReadExternalStoragePermission();
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -302,8 +373,8 @@ class Comment { // 자바빈
     String comment = "";
     String time = "";
     String uid = "";
-    int img; // 이미지
-    public Comment(String comment, String time, String uid, int img) {
+    String img; // 이미지
+    public Comment(String comment, String time, String uid, String img) {
         this.comment = comment;
         this.time = time;
         this.uid = uid;
