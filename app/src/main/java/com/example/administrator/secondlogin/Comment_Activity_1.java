@@ -22,12 +22,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -54,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.Inflater;
 
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 
@@ -69,7 +74,8 @@ public class Comment_Activity_1 extends Activity {
     ArrayList<Comment> al = new ArrayList<Comment>();
     public RequestManager mGlideRequestManager;
 
-
+    private ListView mList_Lv;
+    private ScrollView mScroll_Sv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +88,15 @@ public class Comment_Activity_1 extends Activity {
         System.out.println("0809_1");
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+        iNit();
+
+
+
+
+
+
+
+
         db.collection("user_store").document("TrustOne").collection("Comment")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -93,7 +108,18 @@ public class Comment_Activity_1 extends Activity {
                                 al.add(new Comment((String)document.get("COMMENT") ,(String)document.get("TIME"), (String)document.get("UID"),(String)document.get("PHOTO") ));
                                 System.out.println("0809_1.5" + (String)document.get("COMMENT"));
 
+
                             }
+                            MyAdapter adapter = new MyAdapter(
+                                    getApplicationContext(),
+                                    R.layout.listview_layout,
+                                    al);
+                            ListView lv = (ListView)findViewById(R.id.listview);
+                       //     setListViewHeightBasedOnItems(lv);
+                            lv.setAdapter(adapter);
+                       //     setListViewHeightBasedOnChildren(lv);
+
+
                         } else {
                       //      Log.d(TAG, "Error getting documents: ", task.getException());
                         }
@@ -103,15 +129,27 @@ public class Comment_Activity_1 extends Activity {
 
      //   StorageReference pathReference = storageRef.child("user_store/Trustone_store/comment");
         System.out.println("0809_2");
-    MyAdapter adapter = new MyAdapter(
-            getApplicationContext(),
-            R.layout.listview_layout,
-            al);
-        ListView lv = (ListView)findViewById(R.id.listview);
-        lv.setAdapter(adapter);
+
         System.out.println("0809_3");
     }
+
 ///////
+
+    private void iNit(){
+        mScroll_Sv = (ScrollView)findViewById(R.id.sss);
+        mList_Lv = (ListView) findViewById(R.id.listview);
+
+
+        mList_Lv.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mScroll_Sv.requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+    }
+
+
 class MyAdapter extends BaseAdapter {
     Context context;
     int layout;
@@ -139,7 +177,7 @@ class MyAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+        System.out.println("0809_7");
         if (convertView == null)
             convertView = inf.inflate(layout, null);
 
@@ -336,6 +374,8 @@ class MyAdapter extends BaseAdapter {
                 // ...
                 System.out.println("upload success123");
                 EditText edittext = (EditText)findViewById(R.id.editText);
+         //       edittext.setFocusable(false);
+                edittext.clearFocus();
                 String s_edit = edittext.getText().toString();
                 db = FirebaseFirestore.getInstance();
 

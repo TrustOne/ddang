@@ -47,6 +47,7 @@
         <activity android:name=".creditActivity" />
         <activity
             android:name=".Comment_Activity_1"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/title_activity_comment__1"></activity>
     </application>
 
