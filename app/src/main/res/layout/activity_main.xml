@@ -9,7 +9,7 @@
 
 
     <ImageView
-        android:id="@+id/image1"
+        android:id="@+id/img_islogin"
         android:layout_width="32dp"
         android:layout_height="23dp"
         android:onClick="OnclickM"
@@ -24,11 +24,12 @@
         android:id="@+id/emailtextView"
         android:layout_width="112dp"
         android:layout_height="23dp"
+        android:layout_marginEnd="8dp"
         android:clickable="true"
         android:gravity="right"
         android:text="TextView"
         android:textSize="10sp"
-        app:layout_constraintEnd_toStartOf="@+id/image1"
+        app:layout_constraintEnd_toStartOf="@+id/img_islogin"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

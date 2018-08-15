@@ -1,7 +1,6 @@
 package com.example.administrator.secondlogin;
 
 
-import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -15,32 +14,23 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
     int minteger2 = 1;
     int minteger3 = 1;
     int minteger4 = 1;
-    final Integer[] tmp_quntity = {0};
-    final boolean[] isexist = {false};
+
     private FirebaseAuth mAuth;
     private boolean islogin = false;
     FirebaseFirestore db;
@@ -57,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mAuth = FirebaseAuth.getInstance();
-
         AssetManager am = getResources().getAssets() ;
         InputStream is = null ;
         try { // 애셋 폴더에 저장된 field.png 열기.
@@ -67,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 // 입력스트림 is를 통해 field.png 을 Bitmap 객체로 변환.
             Bitmap bm = BitmapFactory.decodeStream(is) ;
 // 만들어진 Bitmap 객체를 이미지뷰에 표시.
-            ImageView imageView = (ImageView) findViewById(R.id.image1) ;
+            ImageView imageView = (ImageView) findViewById(R.id.img_islogin) ;
             imageView.setImageBitmap(bm) ;
             is.close() ; }
         catch (Exception e) { e.printStackTrace(); }
@@ -100,18 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
             islogin = true;
-/*
-mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
-user.getEmail(), user.isEmailVerified()));
-mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
 
-findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
-findViewById(R.id.email_password_fields).setVisibility(View.GONE);
-findViewById(R.id.signed_in_buttons).setVisibility(View.VISIBLE);
-
-findViewById(R.id.verify_email_button).setEnabled(!user.isEmailVerified());
-
-*/
         } else {
             islogin=false;
             TextView mTextView = findViewById(R.id.emailtextView);
@@ -132,7 +108,6 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
         if(islogin ==false)
         {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-// intent.putExtra("key", listContent[position]);
             startActivity(intent);
         }
 
@@ -180,7 +155,6 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-
                             if(task.getResult().isEmpty()) {
                                 Map<String, Object> data = new HashMap<>();
                                 data.put("TIME", getTime);
@@ -188,20 +162,16 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
                                 data.put("P_PRICE", "16000");
                                 data.put("P_NAME", "스와브로스키 사파이어 넥클리스 보급형");
                                 data.put("P_QUNTITY", String.valueOf(minteger2));
-
                                 db.collection("user_cart").document(currentUser.getUid()).collection(currentUser.getUid())
                                         .add(data);
                             }
                             else {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
-                                    System.out.println("yyy234");
-                                    // int sum = minteger1+ Integer.parseInt((String) document.get("P_QUNTITY"));
-                                    System.out.println("yyy345");
                                     document.getReference().update("P_QUNTITY", String.valueOf(minteger2 + Integer.parseInt((String) document.get("P_QUNTITY"))));
                                 }
                             }
                         } else {
-                            System.out.println("yyyyyyyyyyy");
+
                         }
                     }
                 });
@@ -239,14 +209,10 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
                             }
                             else {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
-                                    System.out.println("yyy234");
-                                    // int sum = minteger1+ Integer.parseInt((String) document.get("P_QUNTITY"));
-                                    System.out.println("yyy345");
                                     document.getReference().update("P_QUNTITY", String.valueOf(minteger3 + Integer.parseInt((String) document.get("P_QUNTITY"))));
                                 }
                             }
                         } else {
-                            System.out.println("yyyyyyyyyyy");
                         }
                     }
                 });
@@ -285,14 +251,10 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
                             }
                             else {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
-                                    System.out.println("yyy234");
-                                    // int sum = minteger1+ Integer.parseInt((String) document.get("P_QUNTITY"));
-                                    System.out.println("yyy345");
                                     document.getReference().update("P_QUNTITY", String.valueOf(minteger4 + Integer.parseInt((String) document.get("P_QUNTITY"))));
                                 }
                             }
                         } else {
-                            System.out.println("yyyyyyyyyyy");
                         }
                     }
                 });
@@ -307,44 +269,37 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.FFF");
         final String getTime = sdf.format(date);
 
-            db.collection("user_cart").document(currentUser.getUid()).collection(currentUser.getUid())
-                    .whereEqualTo("P_ID","114")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @RequiresApi(api = Build.VERSION_CODES.N)
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
+        db.collection("user_cart").document(currentUser.getUid()).collection(currentUser.getUid())
+                .whereEqualTo("P_ID","114")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
 
-                                if(task.getResult().isEmpty())
-                                {
-                                    System.out.println("yyy123");
+                            if(task.getResult().isEmpty())
+                            {
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("TIME", getTime);
+                                data.put("P_ID", "114");
+                                data.put("P_PRICE", "12000");
+                                data.put("P_NAME", "정관장 홈삼");
+                                data.put("P_QUNTITY", String.valueOf(minteger1));
 
-                                    Map<String, Object> data = new HashMap<>();
-                                    data.put("TIME", getTime);
-                                    data.put("P_ID", "114");
-                                    data.put("P_PRICE", "12000");
-                                    data.put("P_NAME", "정관장 홈삼");
-                                    data.put("P_QUNTITY", String.valueOf(minteger1));
-
-                                    db.collection("user_cart").document(currentUser.getUid()).collection(currentUser.getUid())
-                                            .add(data);
-                                }
-                                else {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        System.out.println("yyy234");
-                                       // int sum = minteger1+ Integer.parseInt((String) document.get("P_QUNTITY"));
-                                        System.out.println("yyy345");
-                                        document.getReference().update("P_QUNTITY", String.valueOf(minteger1 + Integer.parseInt((String) document.get("P_QUNTITY"))));
-                                    }
-                                }
-                            } else {
-
-                                 System.out.println("yyyyyyyyyyy");
+                                db.collection("user_cart").document(currentUser.getUid()).collection(currentUser.getUid())
+                                        .add(data);
                             }
+                            else {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    document.getReference().update("P_QUNTITY", String.valueOf(minteger1 + Integer.parseInt((String) document.get("P_QUNTITY"))));
+                                }
+                            }
+                        } else {
                         }
-                    });
-        }
+                    }
+                });
+    }
 
 
     public void credit(View view) {
@@ -419,7 +374,6 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
 
     public void Comment1_click(View view) {
         Intent intent = new Intent(MainActivity.this, Comment_Activity_1.class);
-// intent.putExtra("key", listContent[position]);
         startActivity(intent);
     }
 ///////

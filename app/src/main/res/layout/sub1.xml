@@ -38,7 +38,7 @@
             android:text="00000" />
 
         <TextView
-            android:id="@+id/tv_P_QUNTITY2"
+            android:id="@+id/tv_P_COUNT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="1dp"

@@ -1,7 +1,6 @@
 package com.example.administrator.secondlogin;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,7 +20,6 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -32,7 +30,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -48,12 +45,8 @@ import com.nhn.android.naverlogin.OAuthLoginHandler;
 import com.nhn.android.naverlogin.ui.view.OAuthLoginButton;
 
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -71,9 +64,6 @@ public class LoginActivity extends AppCompatActivity implements
     private OAuthLogin mOAuthLoginModule;
     OAuthLoginButton mOAuthLoginButton;
     private Context mContext;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-    public static OAuthLogin mOAuthLoginInstance;
-    public Map<String,String> mUserInfoMap;
     FirebaseFirestore db;
 
 
@@ -106,61 +96,35 @@ public class LoginActivity extends AppCompatActivity implements
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-// Log.d(TAG, "facebook:onSuccess:" + loginResult);
-
                 handleFacebookAccessToken(loginResult.getAccessToken());
-
             }
-
             @Override
-            public void onCancel() {
-
-            }
-
+            public void onCancel() { }
             @Override
-            public void onError(FacebookException error) {
-
-            }
-
+            public void onError(FacebookException error) { }
         });
 
         mOAuthLoginButton = (OAuthLoginButton)findViewById(R.id.buttonOAuthLoginImg);
-
         mOAuthLoginModule = OAuthLogin.getInstance();
         mOAuthLoginModule.init(
                 LoginActivity.this
                 ,"qDhJlUx_rSCXL6fEGYBT"
                 ,"njuVd0rCfz"
                 ,"Client Name"
-//,OAUTH_CALLBACK_INTENT
-// SDK 4.1.4 버전부터는 OAUTH_CALLBACK_INTENT변수를 사용하지 않습니다.
-
         );
-    /*    if (mOAuthLoginModule.getAccessToken(this) != null) {
-            startActivity(new Intent(this,MainActivity.class));
-        } else  {
-            mOAuthLoginButton.setOAuthLoginHandler(mOAuthLoginHandler);
-
-//위 코드가 네이버 아이디 로그인을 요청하는 코드입니다.
-        }*/
         mOAuthLoginButton.setOAuthLoginHandler(mOAuthLoginHandler);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
-// Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-// Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
 
             } catch (ApiException e) {
-// Google Sign In failed, update UI appropriately
-// Log.w(TAG, "Google sign in failed", e);
-// ...
             }
         }
     }
@@ -173,8 +137,6 @@ public class LoginActivity extends AppCompatActivity implements
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-// Sign in success, update UI with the signed-in user's information
-// Log.d(TAG, "signInWithCredential:success");
                             long now = System.currentTimeMillis();
                             Date date = new Date(now);
 
@@ -217,14 +179,8 @@ public class LoginActivity extends AppCompatActivity implements
                     }
                 });
     }
-
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-
-
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
 
     @SuppressLint("HandlerLeak")
     private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
@@ -238,8 +194,6 @@ public class LoginActivity extends AppCompatActivity implements
                 ProfileTask task = new ProfileTask();
                 // 이 클래스가 유저정보를 가져오는 업무를 담당합니다.
                 task.execute(accessToken);
-
-
             } else {
 
                 String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
@@ -265,66 +219,37 @@ public class LoginActivity extends AppCompatActivity implements
                             FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
-                            //      updateUI(user);
-                        } else {
-                            System.out.println("login Success456"+ task.getException().getMessage());
 
+                        } else {
                             if(task.getException().getMessage().equals("The email address is already in use by another account."))
                             {
-
                                 signIn(email,password);
                             }
-
-                            else
-                            {
-
-                            }
-                            // If sign in fails, display a message to the user.
-
-                            //        Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
-                            //                Toast.LENGTH_SHORT).show();
-                            //        updateUI(null);
+                            else { }
                         }
-
-                        // ...
                     }
                 });
     }
 
     private void signIn(final String email, final String password) {
-        //Log.d(TAG, "signIn:" + email);
-        System.out.println("this here?");
-        // [START sign_in_with_email]
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-               //             Log.d(TAG, "signInWithEmail:success");
-
                             FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                         } else {
-                            // If sign in fails, display a message to the user.
-
                             if(task.getException().getMessage().equals("There is no user record corresponding to this identifier. The user may have been deleted."))
                             {
                                 creadUser(email,password);
                             }
 
                         }
-
-                        // [START_EXCLUDE]
-                        if (!task.isSuccessful()) {
-
-                        }
-
-                        // [END_EXCLUDE]
+                        if (!task.isSuccessful()) { }
                     }
                 });
-        // [END sign_in_with_email]
     }
 
     class ProfileTask extends AsyncTask<String, Void, String> {
@@ -359,7 +284,6 @@ public class LoginActivity extends AppCompatActivity implements
                 System.out.println(e);
             }
             //result 값은 JSONObject 형태로 넘어옵니다.
-
             return result;
         }
 
@@ -372,28 +296,18 @@ public class LoginActivity extends AppCompatActivity implements
                 //넘어온 result 값을 JSONObject 로 변환해주고, 값을 가져오면 되는데요.
                 // result 를 Log에 찍어보면 어떻게 가져와야할 지 감이 오실거에요.
                 JSONObject object = new JSONObject(result);
-                Log.d("resulta", result);
+
                 if(object.getString("resultcode").equals("00")) {
                     JSONObject jsonObject = new JSONObject(object.getString("response"));
-                    Log.d("jsonObject", jsonObject.toString());
                     SharedPreferences test = getSharedPreferences("test",MODE_PRIVATE );
                     Editor editor = test.edit();
-                    System.out.println("fgh"+jsonObject.getString("email"));
-
                     editor.putString("email", jsonObject.getString("email"));
                     editor.putString("id", jsonObject.getString("id"));
                     editor.putString("name", jsonObject.getString("name"));
                     editor.putString("gender", jsonObject.getString("gender"));
-                    //             editor.putString("nickname", jsonObject.getString("nickname"));
-                    //             editor.putString("profile", jsonObject.getString("profile_image"));
-                    //        System.out.println("fghj"+object.getString("resultcode"));
                     editor.apply();
-                    //   Intent intent = new Intent(activity, MainActivity.class);
-                    //   activity.startActivity(intent);
-                    String Name = test.getString("email","null");
 
                     signIn(test.getString("email","null"),test.getString("id","null"));
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
