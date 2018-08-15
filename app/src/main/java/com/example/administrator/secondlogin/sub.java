@@ -94,8 +94,6 @@ public class sub extends LinearLayout implements View.OnClickListener {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         document.getReference().delete();
 
-
-
                                     }
                                 } else {
 

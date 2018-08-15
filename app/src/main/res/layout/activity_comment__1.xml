@@ -5,9 +5,7 @@
     android:id="@+id/sss"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="#eff0f1"
-    tools:context=".Comment_Activity_1">
+    android:background="#eff0f1">
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -15,67 +13,105 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minHeight="250dp">
+        android:minHeight="650dp">
 
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="234dp"
+            android:layout_height="110dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_edittext"
+            android:cursorVisible="false"
+            android:ems="5"
+            android:hint="문의시 음식사진, 구매시각, 구매금액 등 표기해주시면 더 자세한 답변을 드리겠습니다."
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:maxLength="400"
+            android:textColorLink="@android:color/background_dark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.901"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            app:layout_constraintBottom_toTopOf="@+id/ratingBar1"
+            app:layout_constraintEnd_toStartOf="@+id/editText"
+            app:layout_constraintHorizontal_bias="0.214"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <RatingBar
+            android:id="@+id/ratingBar1"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="77dp"
+            android:layout_height="20dp"
+            android:layout_gravity="left"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:isIndicator="false"
+            android:max="5"
+            android:numStars="5"
+            android:rating="5"
+            android:stepSize="0.5"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+            app:layout_constraintEnd_toStartOf="@+id/editText"
+            app:layout_constraintHorizontal_bias="0.38"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.28" />
 
         <LinearLayout
             android:id="@+id/linearLayout3"
-            android:layout_width="273dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="84dp"
-            android:background="#ffffff"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="right"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText"
             app:layout_constraintVertical_bias="0.0">
-
-            <EditText
-                android:id="@+id/editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="5"
-                android:background="@drawable/shape_edittext"
-                android:maxLength="400"
-                android:cursorVisible="false"
-                android:hint="문의시 음식사진, 구매시각, 구매금액 등 표기해주시면 더 자세한 답변을 드리겠습니다."
-                android:inputType="textMultiLine|textNoSuggestions"
-                android:textColorLink="@android:color/background_dark"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.901"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="match_parent"
+                android:layout_width="344dp"
                 android:layout_height="wrap_content"
+
+
+                android:layout_weight="1"
                 android:adjustViewBounds="true"
 
-
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.508"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.166" />
-
+                app:layout_constraintTop_toBottomOf="@+id/editText"
+                app:layout_constraintVertical_bias="0.0" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="355dp"
-            android:layout_height="33dp"
-            android:layout_marginTop="6dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:gravity="right"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
             app:layout_constraintVertical_bias="0.0">
@@ -114,15 +150,22 @@
                 app:layout_constraintVertical_bias="0.0" />
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/listview"
-            android:layout_width="wrap_content"
-            android:layout_height="452dp"
+        <LinearLayout
+            android:id="@+id/con"
+            android:layout_width="352dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.028"></LinearLayout>
+
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

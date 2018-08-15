@@ -11,6 +11,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.icu.text.SimpleDateFormat;
 import android.media.ExifInterface;
+import android.media.Rating;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,8 +30,10 @@ import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -70,7 +73,7 @@ public class Comment_Activity_1 extends Activity {
     FirebaseFirestore db;
     StorageReference storageRef;
     FirebaseStorage storage;
-
+    int i =0;
     ArrayList<Comment> al = new ArrayList<Comment>();
     public RequestManager mGlideRequestManager;
 
@@ -82,20 +85,23 @@ public class Comment_Activity_1 extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment__1);
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        TextView tv_name = findViewById(R.id.tv_name);
+        System.out.println("0815_"+currentUser.getEmail());
+        tv_name.setText(mAuth.getCurrentUser().getEmail());
+
+        final LinearLayout con = (LinearLayout)findViewById(R.id.con);
+        final View v = getLayoutInflater().inflate(R.layout.activity_comment__1, null);
+
         final String comment;
         int img;
         mGlideRequestManager = Glide.with(this);
         System.out.println("0809_1");
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
-        iNit();
-
-
-
-
-
-
-
+    //    iNit();
 
         db.collection("user_store").document("TrustOne").collection("Comment")
                 .get()
@@ -104,19 +110,34 @@ public class Comment_Activity_1 extends Activity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                sub2 n_layout = new sub2(getApplicationContext(),v);
+                                con.addView(n_layout);
+                                TextView tv_comment= con.getChildAt(i).findViewById(R.id.tv_comment_sub2);
+                                ImageView img_comment=con.getChildAt(i).findViewById(R.id.imageView_sub2);
+                                TextView tv_name_sub= con.getChildAt(i).findViewById(R.id.tv_name_sub);
+                                RatingBar ratingBar_sub = con.getChildAt(i).findViewById(R.id.ratingBar_sub);
 
-                                al.add(new Comment((String)document.get("COMMENT") ,(String)document.get("TIME"), (String)document.get("UID"),(String)document.get("PHOTO") ));
-                                System.out.println("0809_1.5" + (String)document.get("COMMENT"));
 
+                                StorageReference pathReference = storageRef.child((String)document.get("PHOTO"));
+                                tv_name_sub.setText((String)document.get("ID"));
+                                ratingBar_sub.setRating(Float.valueOf((String)document.get("STAR")));
+                                tv_comment.setText((String)document.get("COMMENT"));
 
+                                mGlideRequestManager
+                                        .using(new FirebaseImageLoader())
+                                        .load(pathReference)
+                                        .into(img_comment);
+                             //   al.add(new Comment((String)document.get("COMMENT") ,(String)document.get("TIME"), (String)document.get("UID"),(String)document.get("PHOTO") ));
+                             //   System.out.println("0809_1.5" + (String)document.get("COMMENT"));
+                                i++;
                             }
-                            MyAdapter adapter = new MyAdapter(
+                        /*    MyAdapter adapter = new MyAdapter(
                                     getApplicationContext(),
                                     R.layout.listview_layout,
-                                    al);
-                            ListView lv = (ListView)findViewById(R.id.listview);
+                                    al);*/
+                       //     ListView lv = (ListView)findViewById(R.id.listview);
                        //     setListViewHeightBasedOnItems(lv);
-                            lv.setAdapter(adapter);
+                       //     lv.setAdapter(adapter);
                        //     setListViewHeightBasedOnChildren(lv);
 
 
@@ -128,14 +149,12 @@ public class Comment_Activity_1 extends Activity {
 
 
      //   StorageReference pathReference = storageRef.child("user_store/Trustone_store/comment");
-        System.out.println("0809_2");
 
-        System.out.println("0809_3");
     }
 
 ///////
 
-    private void iNit(){
+/*    private void iNit(){
         mScroll_Sv = (ScrollView)findViewById(R.id.sss);
         mList_Lv = (ListView) findViewById(R.id.listview);
 
@@ -147,7 +166,7 @@ public class Comment_Activity_1 extends Activity {
                 return false;
             }
         });
-    }
+    }*/
 
 
 class MyAdapter extends BaseAdapter {
@@ -246,8 +265,9 @@ class MyAdapter extends BaseAdapter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL); System.out.println("imageTest2.5");
-        int exifDegree = exifOrientationToDegrees(exifOrientation); System.out.println("imageTest2.7");
+        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        int exifDegree = exifOrientationToDegrees(exifOrientation);
         System.out.println("imageTest3");
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
         ImageView ivImage = (ImageView)findViewById(R.id.imageView);
@@ -293,23 +313,13 @@ class MyAdapter extends BaseAdapter {
     private void requestReadExternalStoragePermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
-
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
             } else {
-
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         MY_PERMISSIONS_REQUEST_READ_EXT_STORAGE);
-                // MY_PERMISSIONS_REQUEST_READ_EXT_STORAGE is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
         }
     }
@@ -343,7 +353,9 @@ class MyAdapter extends BaseAdapter {
         ImageView imageView = (ImageView)findViewById(R.id.imageView);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
+        RatingBar ratingBar = findViewById(R.id.ratingBar1);
+        float rating = ratingBar.getRating();
+        final String s_rating = String.valueOf(rating);
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssFFF");
@@ -384,6 +396,8 @@ class MyAdapter extends BaseAdapter {
                 data.put("UID", currentUser.getUid());
                 data.put("COMMENT", s_edit);
                 data.put("PHOTO", mountainsRef.getPath());
+                data.put("STAR", s_rating);
+                data.put("ID", currentUser.getEmail());
 
                 db.collection("user_store").document("TrustOne").collection("Comment")
                         .add(data)

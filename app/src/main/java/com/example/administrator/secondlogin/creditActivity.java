@@ -37,25 +37,18 @@ public class creditActivity extends AppCompatActivity {
     int sum_int=0;
     String sum_string="";
 
-
     JSONArray jArray = new JSONArray();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         ;
         setContentView(R.layout.activity_credit);
-
         final LinearLayout con = (LinearLayout)findViewById(R.id.con);
         final View v = getLayoutInflater().inflate(R.layout.activity_credit, null);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-
-        System.out.println("fisrt1112");
-
 
         db.collection("user_cart").document(mAuth.getUid()).collection(mAuth.getUid())
                 .get()
@@ -74,16 +67,12 @@ public class creditActivity extends AppCompatActivity {
 
                                 con.addView(n_layout);
 
-                                System.out.println("fisrt1113");
-
-
 // System.out.println("jArray = "+jArray.getString(i) + " ==== "+(String)document.get("P_PRICE"));
                                 TextView tv_price= con.getChildAt(i).findViewById(R.id.tv_P_PRICE);
                                 TextView tv_pname= con.getChildAt(i).findViewById(R.id.tv_P_NAME);
                                 TextView tv_quntity= con.getChildAt(i).findViewById(R.id.tv_P_QUNTITY);
                                 TextView tv_quntity2= con.getChildAt(i).findViewById(R.id.tv_P_QUNTITY2);
                                 System.out.println("fisrt1114"+ document.get("P_QUNTITY"));
-
 
 //System.out.println("id is = "+con.getChildAt(i));
                                 tv_price.setText((String)document.get("P_PRICE"));
@@ -96,15 +85,10 @@ public class creditActivity extends AppCompatActivity {
                                 int multiply = p_price*p_quntity;
 // sum_string = (String)document.get("P_PRICE");
                                 sum_int += multiply;
-
                                 TextView tv_sum = findViewById(R.id.tv_sum);
-
                                 tv_sum.setText(""+sum_int);
-
 // jArray.get
-
                                 i++;
-
                             }
                         } else {
 // Log.d(TAG, "Error getting documents: ", task.getException());
@@ -112,11 +96,5 @@ public class creditActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-
     }
-
-
-
-
 }
