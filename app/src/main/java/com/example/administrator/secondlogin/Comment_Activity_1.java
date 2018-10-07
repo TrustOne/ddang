@@ -83,6 +83,7 @@ public class Comment_Activity_1 extends Activity {
         mGlideRequestManager = Glide.with(this);
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+        System.out.print("ss");System.out.print("ss");
     //    iNit();
 
         db.collection("user_store").document("TrustOne").collection("Comment")

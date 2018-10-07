@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         AssetManager am = getResources().getAssets() ;
         InputStream is = null ;
+        System.out.print("ss");
         try { // 애셋 폴더에 저장된 field.png 열기.
             is = am.open("exit.png") ;
 // 입력스트림 is를 통해 field.png 을 Bitmap 객체로 변환.
