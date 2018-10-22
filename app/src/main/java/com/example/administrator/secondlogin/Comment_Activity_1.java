@@ -83,8 +83,8 @@ public class Comment_Activity_1 extends Activity {
         mGlideRequestManager = Glide.with(this);
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
-        System.out.print("ss");System.out.print("ss");
-    //    iNit();
+
+
 
         db.collection("user_store").document("TrustOne").collection("Comment")
                 .get()
@@ -262,14 +262,14 @@ public class Comment_Activity_1 extends Activity {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle unsuccessful uploads
-                    System.out.println("upload fail123");
+
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                     // ...
-                    System.out.println("upload success123");
+
                     EditText edittext = (EditText)findViewById(R.id.editText);
                     //       edittext.setFocusable(false);
                     edittext.clearFocus();

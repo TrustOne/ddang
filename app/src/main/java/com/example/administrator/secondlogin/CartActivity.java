@@ -46,7 +46,7 @@ public class CartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
-        System.out.println("20181007_a");
+
         mAuth = FirebaseAuth.getInstance();
         AssetManager am = getResources().getAssets() ;
         InputStream is = null ;
