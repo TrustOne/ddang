@@ -116,11 +116,14 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
             app:layout_constraintVertical_bias="0.0">
 
-            <Button
+            <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/button3"
+                app:bootstrapBrand="success"
+                app:roundedCorners="true"
+                app:showOutline="true"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:background="#ffffff"
+                style="@style/wrapping_button"
                 android:drawableStart="@drawable/blue_camera"
                 android:onClick="image_click"
                 android:text="사진첨부"
@@ -131,17 +134,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/scrollView2"
                 app:layout_constraintVertical_bias="0.0" />
 
-            <Button
+            <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:background="@drawable/shape_button"
+                app:roundedCorners="true"
                 android:onClick="upload"
                 android:paddingRight="2dp"
+                app:bootstrapBrand="success"
                 android:text="댓글 달기"
-                android:textColor="#FFFFFF"
+                style="@style/wrapping_button"
                 android:textSize="14sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

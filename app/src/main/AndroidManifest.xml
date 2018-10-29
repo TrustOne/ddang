@@ -47,7 +47,12 @@
             android:name=".Comment_Activity_1"
             android:label="@string/title_activity_comment__1"
             android:windowSoftInputMode="stateAlwaysHidden" />
+<<<<<<< HEAD
         <activity android:name=".CartActivity"></activity>
+=======
+        <activity android:name=".RealMain" />
+        <activity android:name=".FriendProfileActivity"></activity>
+>>>>>>> a220ceb718b6b2e1f73e37d576996479c7908ff2
     </application>
 
 </manifest>
