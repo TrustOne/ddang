@@ -103,7 +103,7 @@ public class Comment_Activity_1 extends Activity {
                                     e.printStackTrace();
                                 }
                                 SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                System.out.println("Time is = "+dt1.format(date));
+
 
                                 sub2 n_layout = new sub2(getApplicationContext(),v);
                                 con.addView(n_layout);
@@ -122,6 +122,7 @@ public class Comment_Activity_1 extends Activity {
                                         .using(new FirebaseImageLoader())
                                         .load(pathReference)
                                         .into(img_comment);
+                                System.out.println("imageview2" + pathReference.getPath()+img_comment.getTransitionName());
                                 i++;
                             }
                         } else {

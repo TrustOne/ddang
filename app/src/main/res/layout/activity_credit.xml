@@ -24,31 +24,44 @@
 
     <TextView
         android:id="@+id/textView5"
-        android:layout_width="32dp"
-        android:layout_height="26dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="53dp"
+        android:layout_height="35dp"
         android:text="총액"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.695"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/con"
-        app:layout_constraintVertical_bias="0.12" />
+        app:layout_constraintVertical_bias="0.24" />
 
     <TextView
         android:id="@+id/tv_sum"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/con"
+        app:layout_constraintVertical_bias="0.238" />
+
+    <com.beardedhen.androidbootstrap.BootstrapButton
+        style="@style/wrapping_button"
+        android:layout_height="26dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="결제하기"
+        app:bootstrapBrand="success"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.255"
-        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintHorizontal_bias="0.882"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/con"
-        app:layout_constraintVertical_bias="0.107" />
+        app:layout_constraintVertical_bias="0.52"
+        app:showOutline="true" />
 
 </android.support.constraint.ConstraintLayout>

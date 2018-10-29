@@ -317,7 +317,7 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
         display1(minteger1);
 
     }public void decreaseInteger1(View view) {
-        minteger1 = minteger1 - 1;
+        if(minteger1>=2)minteger1 = minteger1 - 1;
         display1(minteger1);
     }
 
@@ -332,7 +332,7 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
         display2(minteger2);
 
     }public void decreaseInteger2(View view) {
-        minteger2 = minteger2 - 1;
+        if(minteger2>=2)minteger2 = minteger2 - 1;
         display2(minteger2);
     }
 
@@ -347,7 +347,7 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
         display3(minteger3);
 
     }public void decreaseInteger3(View view) {
-        minteger3 = minteger3 - 1;
+        if(minteger3>=2)minteger3 = minteger3 - 1;
 
         display3(minteger3);
     }
@@ -364,7 +364,7 @@ findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
         display4(minteger4);
 
     }public void decreaseInteger4(View view) {
-        minteger4 = minteger4 - 1;
+        if(minteger4>=2)minteger4 = minteger4 - 1;
         display4(minteger4);
     }
 
