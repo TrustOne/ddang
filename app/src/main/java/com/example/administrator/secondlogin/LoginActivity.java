@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements
     OAuthLoginButton mOAuthLoginButton;
     private Context mContext;
     FirebaseFirestore db;
-
+    private loadinglayout loadinglayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +83,8 @@ public class LoginActivity extends AppCompatActivity implements
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                loadinglayout = new loadinglayout(LoginActivity.this);
+                loadinglayout.show();
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
 
@@ -96,7 +97,10 @@ public class LoginActivity extends AppCompatActivity implements
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                loadinglayout = new loadinglayout(LoginActivity.this);
+                loadinglayout.show();
                 handleFacebookAccessToken(loginResult.getAccessToken());
+
             }
             @Override
             public void onCancel() { }
@@ -152,7 +156,7 @@ public class LoginActivity extends AppCompatActivity implements
 
                             db.collection("user_cart").document(user.getUid())
                                     .set(data, SetOptions.merge());
-
+                            loadinglayout.dismiss();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                         } else {
@@ -169,7 +173,7 @@ public class LoginActivity extends AppCompatActivity implements
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
+                            loadinglayout.dismiss();
                             FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
@@ -187,6 +191,9 @@ public class LoginActivity extends AppCompatActivity implements
         @Override
         public void run(boolean success) {
             if (success) {
+                loadinglayout = new loadinglayout(LoginActivity.this);
+                loadinglayout.show();
+
                 String accessToken = mOAuthLoginModule.getAccessToken(mContext);
                 String refreshToken = mOAuthLoginModule.getRefreshToken(mContext);
                 long expiresAt = mOAuthLoginModule.getExpiresAt(mContext);
@@ -194,6 +201,7 @@ public class LoginActivity extends AppCompatActivity implements
                 ProfileTask task = new ProfileTask();
                 // 이 클래스가 유저정보를 가져오는 업무를 담당합니다.
                 task.execute(accessToken);
+
             } else {
 
                 String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
@@ -215,7 +223,7 @@ public class LoginActivity extends AppCompatActivity implements
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-
+                            loadinglayout.dismiss();
                             FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);

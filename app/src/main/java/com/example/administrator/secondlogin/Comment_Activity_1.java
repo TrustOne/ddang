@@ -20,6 +20,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -61,6 +63,8 @@ public class Comment_Activity_1 extends Activity {
     FirebaseStorage storage;
     int i =0;
     public RequestManager mGlideRequestManager;
+    private loadinglayout loadinglayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,22 @@ public class Comment_Activity_1 extends Activity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        EditText edittext = (EditText)findViewById(R.id.editText);
+        edittext.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (v.getId() == R.id.editText) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_UP:
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+
 
         TextView tv_name = findViewById(R.id.tv_name);
         String email = mAuth.getCurrentUser().getEmail();
@@ -86,7 +106,7 @@ public class Comment_Activity_1 extends Activity {
 
 
 
-        db.collection("user_store").document("TrustOne").collection("Comment")
+        db.collection("user_store").document("TrustOne").collection("Comment").orderBy("TIME", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -130,7 +150,12 @@ public class Comment_Activity_1 extends Activity {
                         }
                     }
                 });
+
+
     }
+
+
+
 
     public void image_click(View view) {
         requestReadExternalStoragePermission();
@@ -247,6 +272,8 @@ public class Comment_Activity_1 extends Activity {
         final String getTime = sdf.format(date);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
+        loadinglayout = new loadinglayout(Comment_Activity_1.this);
+        loadinglayout.show();
         final StorageReference mountainsRef = storageRef.child("user_store/Trustone_store/comment/"+getTime+"_"+currentUser.getUid());
 
         if(null!=imageView.getDrawable()) {
@@ -283,7 +310,14 @@ public class Comment_Activity_1 extends Activity {
                     data.put("COMMENT", s_edit);
                     data.put("PHOTO", mountainsRef.getPath());
                     data.put("STAR", s_rating);
-                    data.put("ID", currentUser.getEmail());
+                    if(TextUtils.isEmpty(currentUser.getEmail())) {
+
+                        data.put("ID", currentUser.getDisplayName());
+                    }
+                    else {
+                        data.put("ID", currentUser.getEmail());
+
+                    }
 
                     db.collection("user_store").document("TrustOne").collection("Comment")
                             .add(data)
@@ -291,6 +325,12 @@ public class Comment_Activity_1 extends Activity {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     //         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                                    EditText edittext = (EditText)findViewById(R.id.editText);
+                                    edittext.setText("");
+                                    ImageView imageView = (ImageView)findViewById(R.id.imageView);
+                                    imageView.setImageDrawable(null);
+                                    recreate();
+                                    loadinglayout.dismiss();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -314,7 +354,19 @@ public class Comment_Activity_1 extends Activity {
             data.put("COMMENT", s_edit);
             data.put("PHOTO", "NULL");
             data.put("STAR", s_rating);
-            data.put("ID", currentUser.getEmail());
+
+
+            if(TextUtils.isEmpty(currentUser.getEmail())) {
+
+                data.put("ID", currentUser.getDisplayName());
+            }
+            else {
+                data.put("ID", currentUser.getEmail());
+
+            }
+
+
+
 
             db.collection("user_store").document("TrustOne").collection("Comment")
                     .add(data)
@@ -322,6 +374,11 @@ public class Comment_Activity_1 extends Activity {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
                             //         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                            EditText edittext = (EditText)findViewById(R.id.editText);
+                            edittext.setText("");
+                            ImageView imageView = (ImageView)findViewById(R.id.imageView);
+                            imageView.setImageDrawable(null);
+                            recreate();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -331,5 +388,7 @@ public class Comment_Activity_1 extends Activity {
                         }
                     });
         }
+     //up로드 끝나는시점
+
     }
 }
