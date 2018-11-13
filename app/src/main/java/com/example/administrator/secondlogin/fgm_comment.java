@@ -1,7 +1,5 @@
 package com.example.administrator.secondlogin;
-
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -14,20 +12,25 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -53,7 +56,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Comment_Activity_1 extends Activity {
+import static android.app.Activity.RESULT_OK;
+import static com.facebook.FacebookSdk.getApplicationContext;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class fgm_comment extends Fragment implements View.OnClickListener{
+
+    View root;
     private final int GALLERY_CODE=1112;
     private final int MY_PERMISSIONS_REQUEST_READ_EXT_STORAGE = 1113;
     FirebaseUser currentUser;
@@ -64,16 +75,29 @@ public class Comment_Activity_1 extends Activity {
     int i =0;
     public RequestManager mGlideRequestManager;
     private loadinglayout loadinglayout;
+    BootstrapButton button3,button2;
+    public fgm_comment() {
+        // Required empty public constructor
+    }
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_comment__1);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        root = inflater.inflate(R.layout.fragment_fgm_comment, container, false);
+        System.out.println("20181112");
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        EditText edittext = (EditText)findViewById(R.id.editText);
+        System.out.println("20181112_1");
+        button3 = (BootstrapButton)root.findViewById(R.id.button3);
+        System.out.println("20181112_1");
+        button3.setOnClickListener(this);
+        button2 = (BootstrapButton)root.findViewById(R.id.button2);
+        button2.setOnClickListener(this);
+
+        EditText edittext = (EditText)root.findViewById(R.id.editText);
         edittext.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -89,22 +113,23 @@ public class Comment_Activity_1 extends Activity {
             }
         });
 
-        TextView tv_name = findViewById(R.id.tv_name);
+        TextView tv_name = root.findViewById(R.id.tv_name);
         String email = mAuth.getCurrentUser().getEmail();
-
+        System.out.println("20181112_1");
         if(TextUtils.isEmpty(email)) {
+
             tv_name.setText(mAuth.getCurrentUser().getDisplayName());
         }
         else {
             tv_name.setText(mAuth.getCurrentUser().getEmail());
         }
-        final LinearLayout con = (LinearLayout)findViewById(R.id.con);
-        final View v = getLayoutInflater().inflate(R.layout.activity_comment__1, null);
+        final LinearLayout con = (LinearLayout)root.findViewById(R.id.con);
+        final View v = getActivity().getLayoutInflater().inflate(R.layout.activity_comment__1, null);
         mGlideRequestManager = Glide.with(this);
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
 
-
+        System.out.println("20181112_1");
 
         db.collection("user_store").document("TrustOne").collection("Comment").orderBy("TIME", Query.Direction.DESCENDING)
                 .get()
@@ -125,7 +150,7 @@ public class Comment_Activity_1 extends Activity {
                                 SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
-                                sub2 n_layout = new sub2(getApplicationContext(),v);
+                                sub2 n_layout = new sub2(getActivity().getApplicationContext(),v);
                                 con.addView(n_layout);
                                 TextView tv_comment= con.getChildAt(i).findViewById(R.id.tv_comment_sub2);
                                 ImageView img_comment=con.getChildAt(i).findViewById(R.id.imageView_sub2);
@@ -152,21 +177,29 @@ public class Comment_Activity_1 extends Activity {
                 });
 
 
+        return root;
     }
 
-
-
-
-    public void image_click(View view) {
-        requestReadExternalStoragePermission();
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-        startActivityForResult(intent, GALLERY_CODE);
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.button3:
+                requestReadExternalStoragePermission();
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+                startActivityForResult(intent, GALLERY_CODE);
+                break;
+            case R.id.button2:
+                upload();
+                break;
+        }
+    }
+
+    //2018-11-12
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -191,7 +224,7 @@ public class Comment_Activity_1 extends Activity {
         int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
         int exifDegree = exifOrientationToDegrees(exifOrientation);
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
-        ImageView ivImage = (ImageView)findViewById(R.id.imageView);
+        ImageView ivImage = (ImageView)root.findViewById(R.id.imageView);
         ivImage.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
     }
     private int exifOrientationToDegrees(int exifOrientation) {
@@ -219,7 +252,7 @@ public class Comment_Activity_1 extends Activity {
     private String getRealPathFromURI(Uri contentUri) {
         int column_index=0;
         String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        Cursor cursor = getApplicationContext().getContentResolver().query(contentUri, proj, null, null, null);
         if(cursor.moveToFirst()){
             column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         }
@@ -227,14 +260,14 @@ public class Comment_Activity_1 extends Activity {
         return cursor.getString(column_index);
     }
     private void requestReadExternalStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         MY_PERMISSIONS_REQUEST_READ_EXT_STORAGE);
             }
         }
@@ -258,12 +291,14 @@ public class Comment_Activity_1 extends Activity {
         }
     }
 
+
+    //20181112
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void upload(View view) {
-        ImageView imageView = (ImageView)findViewById(R.id.imageView);
+    public void upload() {
+        ImageView imageView = (ImageView)root.findViewById(R.id.imageView);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        RatingBar ratingBar = findViewById(R.id.ratingBar1);
+        RatingBar ratingBar = root.findViewById(R.id.ratingBar1);
         float rating = ratingBar.getRating();
         final String s_rating = String.valueOf(rating);
         long now = System.currentTimeMillis();
@@ -272,7 +307,7 @@ public class Comment_Activity_1 extends Activity {
         final String getTime = sdf.format(date);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        loadinglayout = new loadinglayout(Comment_Activity_1.this);
+        loadinglayout = new loadinglayout(getActivity());
         loadinglayout.show();
         final StorageReference mountainsRef = storageRef.child("user_store/Trustone_store/comment/"+getTime+"_"+currentUser.getUid());
 
@@ -298,7 +333,7 @@ public class Comment_Activity_1 extends Activity {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                     // ...
 
-                    EditText edittext = (EditText)findViewById(R.id.editText);
+                    EditText edittext = (EditText)root.findViewById(R.id.editText);
                     //       edittext.setFocusable(false);
                     edittext.clearFocus();
                     String s_edit = edittext.getText().toString();
@@ -325,11 +360,11 @@ public class Comment_Activity_1 extends Activity {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     //         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                                    EditText edittext = (EditText)findViewById(R.id.editText);
+                                    EditText edittext = (EditText)root.findViewById(R.id.editText);
                                     edittext.setText("");
-                                    ImageView imageView = (ImageView)findViewById(R.id.imageView);
+                                    ImageView imageView = (ImageView)root.findViewById(R.id.imageView);
                                     imageView.setImageDrawable(null);
-                                    recreate();
+                                    getActivity().recreate();
                                     loadinglayout.dismiss();
                                 }
                             })
@@ -343,7 +378,7 @@ public class Comment_Activity_1 extends Activity {
             });
         }
         else{
-            EditText edittext = (EditText)findViewById(R.id.editText);
+            EditText edittext = (EditText)root.findViewById(R.id.editText);
             edittext.clearFocus();
             String s_edit = edittext.getText().toString();
             db = FirebaseFirestore.getInstance();
@@ -374,11 +409,11 @@ public class Comment_Activity_1 extends Activity {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
                             //         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                            EditText edittext = (EditText)findViewById(R.id.editText);
+                            EditText edittext = (EditText)root.findViewById(R.id.editText);
                             edittext.setText("");
-                            ImageView imageView = (ImageView)findViewById(R.id.imageView);
+                            ImageView imageView = (ImageView)root.findViewById(R.id.imageView);
                             imageView.setImageDrawable(null);
-                            recreate();
+                            getActivity().recreate();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -388,7 +423,9 @@ public class Comment_Activity_1 extends Activity {
                         }
                     });
         }
-     //up로드 끝나는시점
+        //up로드 끝나는시점
 
     }
+
+
 }
