@@ -108,11 +108,8 @@ public class fgm_cart extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+       // System.out.println("20181125");
         root = inflater.inflate(R.layout.fragment_fgm_cart, container, false);
-
-
-
         joinButton = (ImageView) root.findViewById(R.id.img_islogin);
         joinButton.setOnClickListener(this);
         increase1 = (Button) root.findViewById(R.id.increase1);
@@ -160,9 +157,6 @@ public class fgm_cart extends Fragment implements View.OnClickListener{
         return root;
     }
 
-
-
-
     @Override
     public void onStart() {
         super.onStart();
@@ -171,7 +165,6 @@ public class fgm_cart extends Fragment implements View.OnClickListener{
     }
     private void updateUI(FirebaseUser user) {
 // hideProgressDialog();
-
 
         if (user != null) {
 
@@ -188,8 +181,6 @@ public class fgm_cart extends Fragment implements View.OnClickListener{
             mTextView.setText("로그인");
         }
     }
-
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onClick(View view) {
@@ -539,9 +530,4 @@ public void add2() {
         fragmentTransaction.commit();
 
     }
-
-
-
-
-
 }
