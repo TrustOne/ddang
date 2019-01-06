@@ -1,7 +1,5 @@
 package com.example.administrator.secondlogin;
-
 import android.Manifest;
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -14,6 +12,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -24,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,13 +48,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
-import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,24 +65,17 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class fgm_comment extends Fragment implements View.OnClickListener{
 
     View root;
-    private final int GALLERY_CODE = 1112;
+    private final int GALLERY_CODE=1112;
     private final int MY_PERMISSIONS_REQUEST_READ_EXT_STORAGE = 1113;
     FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     FirebaseFirestore db;
     StorageReference storageRef;
     FirebaseStorage storage;
-    int i = 0;
+    int i =0;
     public RequestManager mGlideRequestManager;
     private loadinglayout loadinglayout;
-    BootstrapButton button3, button2;
-    SwipyRefreshLayout mSwipeRefreshLayout;
-    LinearLayout con;
-    View v;
-    int endat=5;
-    String startat;
-
-
+    BootstrapButton button3,button2;
     public fgm_comment() {
         // Required empty public constructor
     }
@@ -96,39 +85,19 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         root = inflater.inflate(R.layout.fragment_fgm_comment, container, false);
-        //시작시간을 2118년도로 해도 처음 후기들을 가져오는데 아무 지장이 없음을 확인
-        startat = "21180809185359002";
-
-        mSwipeRefreshLayout = (SwipyRefreshLayout) root.findViewById(R.id.swipe_refresh_wrapper);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh(SwipyRefreshLayoutDirection direction) {
-
-          //      endat = endat +5;
-                commentsetting(endat);
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-
-
-
-        mSwipeRefreshLayout.setDirection(SwipyRefreshLayoutDirection.BOTH);
-
-
+        System.out.println("20181112");
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        button3 = (BootstrapButton) root.findViewById(R.id.button3);
-
+        System.out.println("20181112_1");
+        button3 = (BootstrapButton)root.findViewById(R.id.button3);
+        System.out.println("20181112_1");
         button3.setOnClickListener(this);
-        button2 = (BootstrapButton) root.findViewById(R.id.button2);
+        button2 = (BootstrapButton)root.findViewById(R.id.button2);
         button2.setOnClickListener(this);
 
-        EditText edittext = (EditText) root.findViewById(R.id.editText);
+        EditText edittext = (EditText)root.findViewById(R.id.editText);
         edittext.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -146,29 +115,23 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
 
         TextView tv_name = root.findViewById(R.id.tv_name);
         String email = mAuth.getCurrentUser().getEmail();
-
-        if (TextUtils.isEmpty(email)) {
+        System.out.println("20181112_1");
+        if(TextUtils.isEmpty(email)) {
 
             tv_name.setText(mAuth.getCurrentUser().getDisplayName());
-        } else {
+        }
+        else {
             tv_name.setText(mAuth.getCurrentUser().getEmail());
         }
-        con = (LinearLayout) root.findViewById(R.id.con);
-        v = getActivity().getLayoutInflater().inflate(R.layout.activity_comment__1, null);
+        final LinearLayout con = (LinearLayout)root.findViewById(R.id.con);
+        final View v = getActivity().getLayoutInflater().inflate(R.layout.activity_comment__1, null);
         mGlideRequestManager = Glide.with(this);
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
-        System.out.println("ffff_3");
-        commentsetting(endat);
 
+        System.out.println("20181112_1");
 
-
-        return root;
-    }
-
-    public void commentsetting(int endat){
         db.collection("user_store").document("TrustOne").collection("Comment").orderBy("TIME", Query.Direction.DESCENDING)
-                .limit(endat).startAt(startat).endAt("20180809185359002")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -176,8 +139,7 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String date_s = (String) document.get("TIME");
-
+                                String date_s = (String)document.get("TIME");
                                 SimpleDateFormat dt = new SimpleDateFormat("yyyyMMddHHmmssFFF");
                                 Date date = null;
                                 try {
@@ -187,28 +149,25 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
                                 }
                                 SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                                sub2 n_layout = new sub2(getActivity().getApplicationContext(), v);
-                                con.addView(n_layout);
-                                TextView tv_comment = con.getChildAt(i).findViewById(R.id.tv_comment_sub2);
-                                ImageView img_comment = con.getChildAt(i).findViewById(R.id.imageView_sub2);
-                                TextView tv_name_sub = con.getChildAt(i).findViewById(R.id.tv_name_sub);
-                                RatingBar ratingBar_sub = con.getChildAt(i).findViewById(R.id.ratingBar_sub);
-                                TextView tv_time_comment = con.getChildAt(i).findViewById(R.id.tv_time_comment);
 
-                                StorageReference pathReference = storageRef.child((String) document.get("PHOTO"));
-                                tv_name_sub.setText((String) document.get("ID"));
-                                ratingBar_sub.setRating(Float.valueOf((String) document.get("STAR")));
-                                tv_comment.setText((String) document.get("COMMENT"));
-                                startat = (String)document.get("TIME");
-                                double tmp = Double.valueOf(startat)-1;
-                                NumberFormat formatter = new DecimalFormat("###.########");
-                                startat = formatter.format(tmp);
-                                tv_time_comment.setText(dt1.format(date) + "작성");
+                                sub2 n_layout = new sub2(getActivity().getApplicationContext(),v);
+                                con.addView(n_layout);
+                                TextView tv_comment= con.getChildAt(i).findViewById(R.id.tv_comment_sub2);
+                                ImageView img_comment=con.getChildAt(i).findViewById(R.id.imageView_sub2);
+                                TextView tv_name_sub= con.getChildAt(i).findViewById(R.id.tv_name_sub);
+                                RatingBar ratingBar_sub = con.getChildAt(i).findViewById(R.id.ratingBar_sub);
+                                TextView tv_time_comment= con.getChildAt(i).findViewById(R.id.tv_time_comment);
+
+                                StorageReference pathReference = storageRef.child((String)document.get("PHOTO"));
+                                tv_name_sub.setText((String)document.get("ID"));
+                                ratingBar_sub.setRating(Float.valueOf((String)document.get("STAR")));
+                                tv_comment.setText((String)document.get("COMMENT"));
+                                tv_time_comment.setText(dt1.format(date)+"작성");
                                 mGlideRequestManager
                                         .using(new FirebaseImageLoader())
                                         .load(pathReference)
                                         .into(img_comment);
-                                //                      System.out.println("imageview2" + pathReference.getPath() + img_comment.getTransitionName());
+                                System.out.println("imageview2" + pathReference.getPath()+img_comment.getTransitionName());
                                 i++;
                             }
                         } else {
@@ -218,6 +177,7 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
                 });
 
 
+        return root;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -264,10 +224,9 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
         int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
         int exifDegree = exifOrientationToDegrees(exifOrientation);
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
-        ImageView ivImage = (ImageView) root.findViewById(R.id.imageView);
+        ImageView ivImage = (ImageView)root.findViewById(R.id.imageView);
         ivImage.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
     }
-
     private int exifOrientationToDegrees(int exifOrientation) {
         if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
             return 90;
@@ -291,16 +250,15 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
     }
 
     private String getRealPathFromURI(Uri contentUri) {
-        int column_index = 0;
+        int column_index=0;
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = getApplicationContext().getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor.moveToFirst()) {
+        if(cursor.moveToFirst()){
             column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         }
 
         return cursor.getString(column_index);
     }
-
     private void requestReadExternalStoragePermission() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
@@ -314,11 +272,10 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
             }
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_EXT_STORAGE: {
+            case MY_PERMISSIONS_REQUEST_READ_EXT_STORAGE : {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
@@ -338,7 +295,7 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
     //20181112
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void upload() {
-        ImageView imageView = (ImageView) root.findViewById(R.id.imageView);
+        ImageView imageView = (ImageView)root.findViewById(R.id.imageView);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         RatingBar ratingBar = root.findViewById(R.id.ratingBar1);
@@ -352,9 +309,9 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
         StorageReference storageRef = storage.getReference();
         loadinglayout = new loadinglayout(getActivity());
         loadinglayout.show();
-        final StorageReference mountainsRef = storageRef.child("user_store/Trustone_store/comment/" + getTime + "_" + currentUser.getUid());
+        final StorageReference mountainsRef = storageRef.child("user_store/Trustone_store/comment/"+getTime+"_"+currentUser.getUid());
 
-        if (null != imageView.getDrawable()) {
+        if(null!=imageView.getDrawable()) {
             imageView.isSelected();
             imageView.setDrawingCacheEnabled(true);
             imageView.buildDrawingCache();
@@ -376,7 +333,7 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                     // ...
 
-                    EditText edittext = (EditText) root.findViewById(R.id.editText);
+                    EditText edittext = (EditText)root.findViewById(R.id.editText);
                     //       edittext.setFocusable(false);
                     edittext.clearFocus();
                     String s_edit = edittext.getText().toString();
@@ -388,10 +345,11 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
                     data.put("COMMENT", s_edit);
                     data.put("PHOTO", mountainsRef.getPath());
                     data.put("STAR", s_rating);
-                    if (TextUtils.isEmpty(currentUser.getEmail())) {
+                    if(TextUtils.isEmpty(currentUser.getEmail())) {
 
                         data.put("ID", currentUser.getDisplayName());
-                    } else {
+                    }
+                    else {
                         data.put("ID", currentUser.getEmail());
 
                     }
@@ -402,9 +360,9 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     //         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                                    EditText edittext = (EditText) root.findViewById(R.id.editText);
+                                    EditText edittext = (EditText)root.findViewById(R.id.editText);
                                     edittext.setText("");
-                                    ImageView imageView = (ImageView) root.findViewById(R.id.imageView);
+                                    ImageView imageView = (ImageView)root.findViewById(R.id.imageView);
                                     imageView.setImageDrawable(null);
                                     getActivity().recreate();
                                     loadinglayout.dismiss();
@@ -418,8 +376,9 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
                             });
                 }
             });
-        } else {
-            EditText edittext = (EditText) root.findViewById(R.id.editText);
+        }
+        else{
+            EditText edittext = (EditText)root.findViewById(R.id.editText);
             edittext.clearFocus();
             String s_edit = edittext.getText().toString();
             db = FirebaseFirestore.getInstance();
@@ -432,13 +391,16 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
             data.put("STAR", s_rating);
 
 
-            if (TextUtils.isEmpty(currentUser.getEmail())) {
+            if(TextUtils.isEmpty(currentUser.getEmail())) {
 
                 data.put("ID", currentUser.getDisplayName());
-            } else {
+            }
+            else {
                 data.put("ID", currentUser.getEmail());
 
             }
+
+
 
 
             db.collection("user_store").document("TrustOne").collection("Comment")
@@ -447,9 +409,9 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
                             //         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                            EditText edittext = (EditText) root.findViewById(R.id.editText);
+                            EditText edittext = (EditText)root.findViewById(R.id.editText);
                             edittext.setText("");
-                            ImageView imageView = (ImageView) root.findViewById(R.id.imageView);
+                            ImageView imageView = (ImageView)root.findViewById(R.id.imageView);
                             imageView.setImageDrawable(null);
                             getActivity().recreate();
                         }
@@ -466,13 +428,4 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
     }
 
 
-/*    @Override
-    public void onRefresh(SwipyRefreshLayoutDirection direction) {
-        System.out.println("20181202_111");
-        if (direction == SwipyRefreshLayoutDirection.BOTTOM) {
-            System.out.println("20181202");
-            mSwipeRefreshLayout.setRefreshing(false);
-
-        }
-    }*/
 }
