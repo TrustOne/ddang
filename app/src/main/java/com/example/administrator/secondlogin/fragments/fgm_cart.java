@@ -148,7 +148,7 @@ public class fgm_cart extends Fragment implements View.OnClickListener{
         mTextView = (TextView)root.findViewById(R.id.emailtextView);
         try { // 애셋 폴더에 저장된 field.png 열기.
             is = am.open("exit.png") ;
-// 입력스트림 is를 통해 field.png 을 Bitmap 객체로 변환.
+
             Bitmap bm = BitmapFactory.decodeStream(is) ;
 // 만들어진 Bitmap 객체를 이미지뷰에 표시.
             ImageView imageView = (ImageView) root.findViewById(R.id.img_islogin) ;
