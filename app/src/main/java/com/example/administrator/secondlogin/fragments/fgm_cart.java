@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.example.administrator.secondlogin.LoginActivity;
+import com.example.administrator.secondlogin.activities.LoginActivity;
 import com.example.administrator.secondlogin.R;
 import com.example.administrator.secondlogin.creditActivity;
 import com.facebook.login.LoginManager;
@@ -524,7 +524,6 @@ public void add2() {
 //add() : Fragment 추가
 //remove() : Fragment 제거
 //replace() : Fragment 변경
-
         fragmentTransaction.replace(R.id.content_frame, fgm_comment);
         fragmentTransaction.addToBackStack(null);
 //Transaction 작업 후 마지막에 commit()를 호출 후 적용

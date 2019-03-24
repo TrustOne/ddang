@@ -1,6 +1,7 @@
 package com.example.administrator.secondlogin.fragments;
 
 import android.Manifest;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -171,7 +172,6 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
         mGlideRequestManager = Glide.with(this);
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
-        System.out.println("ffff_3");
         commentsetting(endat);
 
 
@@ -179,7 +179,16 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
         return root;
     }
 
-    public void commentsetting(int endat){
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+    }
+
+
+
+
+        public void commentsetting(int endat){
         db.collection("user_store").document("TrustOne").collection("Comment").orderBy("TIME", Query.Direction.DESCENDING)
                 .limit(endat).startAt(startat).endAt("20180809185359002")
                 .get()

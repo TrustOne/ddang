@@ -1,6 +1,7 @@
 package com.example.administrator.secondlogin.fragments;
 
 
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,7 +37,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * A simple {@link Fragment} subclass.
  */
 public class fgm_credit extends Fragment {
-    View root;
+
     private FirebaseAuth mAuth;
     FirebaseFirestore db;
     int i =0;
@@ -44,29 +45,37 @@ public class fgm_credit extends Fragment {
     FirebaseStorage storage;
     StorageReference storageRef;
     public RequestManager mGlideRequestManager;
+    LinearLayout con;
+    View root;
+    View v;
 
     public fgm_credit() {
         // Required empty public constructor
         i = 0;
         sum_int = 0;
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         root= inflater.inflate(R.layout.fragment_credit, container, false);
         ( (MainActivity)getActivity()).updateToolbarTitle("pay");
         ////
         TypefaceProvider.registerDefaultIconSets();
-        final LinearLayout con = (LinearLayout)root.findViewById(R.id.con);
-        final View v = getActivity().getLayoutInflater().inflate(R.layout.activity_credit, null);
+        con = (LinearLayout)root.findViewById(R.id.con);
+         v = getActivity().getLayoutInflater().inflate(R.layout.activity_credit, null);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
         mGlideRequestManager = Glide.with(this);
+        return root;
+    }
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
 
         db.collection("user_cart").document(mAuth.getUid()).collection(mAuth.getUid())
                 .get()
@@ -77,12 +86,14 @@ public class fgm_credit extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 sub n_layout = new sub(getApplicationContext(),v);
                                 con.addView(n_layout);
+                                System.out.println("this is cre"+con.getTransitionName());
+                                System.out.println("this is credit" + con.getChildAt(i).findViewById(R.id.tv_P_PRICE));
                                 TextView tv_price= con.getChildAt(i).findViewById(R.id.tv_P_PRICE);
                                 TextView tv_pname= con.getChildAt(i).findViewById(R.id.tv_P_NAME);
-                                TextView tv_quntity= con.getChildAt(i).findViewById(R.id.tv_P_QUNTITY);
+                                TextView tv_quantity= con.getChildAt(i).findViewById(R.id.tv_P_QUNTITY);
                                 TextView tv_quntity2= con.getChildAt(i).findViewById(R.id.tv_P_COUNT);
                                 ImageView imgview2 = con.getChildAt(i).findViewById(R.id.imageView2);
-                                //      imgview2.setImageDrawable(R.drawable.blue_camera);
+                                //imgview2.setImageDrawable(R.drawable.blue_camera);
 
                                 StorageReference pathReference = storageRef.child("/user_store/Trustone_store/product/"+(String)document.get("P_ID"));
                                 //StorageReference pathReference = storageRef.child("/user_store/Trustone_store/product/113");
@@ -90,10 +101,10 @@ public class fgm_credit extends Fragment {
 
                                 tv_price.setText((String)document.get("P_PRICE"));
                                 tv_pname.setText((String)document.get("P_NAME"));
-                                tv_quntity.setText((String)document.get("P_ID"));
+                                tv_quantity.setText((String)document.get("P_ID"));
                                 tv_quntity2.setText((String)document.get("P_QUNTITY"));
 
-                                System.out.println("imageview load11"+pathReference.getPath()+tv_pname.getId());
+
 
                                 int p_price= Integer.parseInt((String)document.get("P_PRICE"));
                                 int p_quntity = Integer.parseInt((String)document.get("P_QUNTITY"));
@@ -108,8 +119,6 @@ public class fgm_credit extends Fragment {
                                         .using(new FirebaseImageLoader())
                                         .load(pathReference)
                                         .into(imgview2);
-
-
                                 i++;
                             }
                         } else {
@@ -117,11 +126,16 @@ public class fgm_credit extends Fragment {
                         }
                     }
                 });
+    }
 
-        ////
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 
-
-        return root;
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
 }
