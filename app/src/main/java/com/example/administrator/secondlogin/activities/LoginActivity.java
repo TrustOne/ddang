@@ -1,4 +1,4 @@
-package com.example.administrator.secondlogin;
+package com.example.administrator.secondlogin.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,7 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.administrator.secondlogin.activities.MainActivity;
+import com.example.administrator.secondlogin.R;
+import com.example.administrator.secondlogin.loadinglayout;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -65,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements
     OAuthLoginButton mOAuthLoginButton;
     private Context mContext;
     FirebaseFirestore db;
-    private loadinglayout loadinglayout;
+    private com.example.administrator.secondlogin.loadinglayout loadinglayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

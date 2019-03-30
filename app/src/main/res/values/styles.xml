@@ -8,6 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppThemeNoAction" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
     <style name="example_container">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -68,4 +75,11 @@
         <item name="roundedCorners">true</item>
     </style>
 
+    <style name="BottomTabLayout" parent="Widget.Design.TabLayout">
+    <item name="tabIndicatorHeight">0dp</item>
+    <item name="tabPaddingStart">0dp</item>
+    <item name="tabPaddingEnd">0dp</item>
+    <item name="tabGravity">fill</item>
+    <item name="tabMode">fixed</item>
+    </style>
 </resources>
