@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -27,6 +28,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 
@@ -48,6 +51,8 @@ public class fgm_credit extends Fragment {
     LinearLayout con;
     View root;
     View v;
+    TextView tv5;
+    BootstrapButton btn_pay;
 
     public fgm_credit() {
         // Required empty public constructor
@@ -70,6 +75,10 @@ public class fgm_credit extends Fragment {
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
         mGlideRequestManager = Glide.with(this);
+        tv5 = (TextView)root.findViewById(R.id.textView5);
+        tv5.setVisibility(View.INVISIBLE);
+        btn_pay = (BootstrapButton)root.findViewById(R.id.btn_pay);
+        btn_pay.setVisibility(View.INVISIBLE);
         return root;
     }
     @Override
@@ -86,8 +95,7 @@ public class fgm_credit extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 sub n_layout = new sub(getApplicationContext(),v);
                                 con.addView(n_layout);
-                                System.out.println("this is cre"+con.getTransitionName());
-                                System.out.println("this is credit" + con.getChildAt(i).findViewById(R.id.tv_P_PRICE));
+
                                 TextView tv_price= con.getChildAt(i).findViewById(R.id.tv_P_PRICE);
                                 TextView tv_pname= con.getChildAt(i).findViewById(R.id.tv_P_NAME);
                                 TextView tv_quantity= con.getChildAt(i).findViewById(R.id.tv_P_QUNTITY);
@@ -111,6 +119,7 @@ public class fgm_credit extends Fragment {
                                 int multiply = p_price*p_quntity;
                                 sum_int += multiply;
                                 TextView tv_sum = root.findViewById(R.id.tv_sum);
+
                                 DecimalFormat myFormatter = new DecimalFormat("###,###");
                                 String formattedStringPrice = myFormatter.format(sum_int);
                                 tv_sum.setText(""+formattedStringPrice+"원");
@@ -121,6 +130,9 @@ public class fgm_credit extends Fragment {
                                         .into(imgview2);
                                 i++;
                             }
+                        btn_pay.setVisibility(View.VISIBLE);
+                            tv5.setVisibility(View.VISIBLE);
+
                         } else {
 
                         }

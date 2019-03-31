@@ -20,6 +20,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,7 +37,9 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.administrator.secondlogin.R;
+import com.example.administrator.secondlogin.activities.CardItem;
 import com.example.administrator.secondlogin.activities.MainActivity;
+import com.example.administrator.secondlogin.activities.MyRecyclerAdapter;
 import com.example.administrator.secondlogin.loadinglayout;
 import com.example.administrator.secondlogin.sub2;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -46,6 +50,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -61,8 +66,10 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -88,11 +95,14 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
     private com.example.administrator.secondlogin.loadinglayout loadinglayout;
     BootstrapButton button3, button2;
     SwipyRefreshLayout mSwipeRefreshLayout;
-    LinearLayout con;
+    LinearLayout con2;
     View v;
     int endat=5;
     String startat;
+    DocumentSnapshot listvisible;
 
+    List<CardItem> dataList = new ArrayList<>();
+    RecyclerView con;
 
     public fgm_comment() {
         // Required empty public constructor
@@ -112,26 +122,20 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
         //시작시간을 2118년도로 해도 처음 후기들을 가져오는데 아무 지장이 없음을 확인
         startat = "21180809185359002";
 
+        con = (RecyclerView) root.findViewById(R.id.rvList);
         ButterKnife.bind(this, root);
         ( (MainActivity)getActivity()).updateToolbarTitle("comment");
 
-        mSwipeRefreshLayout = (SwipyRefreshLayout) root.findViewById(R.id.swipe_refresh_wrapper);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh(SwipyRefreshLayoutDirection direction) {
-
-          //      endat = endat +5;
-                commentsetting(endat);
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-
-
-
-        mSwipeRefreshLayout.setDirection(SwipyRefreshLayoutDirection.BOTH);
-
-
+//        mSwipeRefreshLayout = (SwipyRefreshLayout) root.findViewById(R.id.swipe_refresh_wrapper);
+//        mSwipeRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh(SwipyRefreshLayoutDirection direction) {
+//
+//          //      endat = endat +5;
+//                commentsetting(endat);
+//                mSwipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -167,8 +171,7 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
         } else {
             tv_name.setText(mAuth.getCurrentUser().getEmail());
         }
-        con = (LinearLayout) root.findViewById(R.id.con);
-        v = getActivity().getLayoutInflater().inflate(R.layout.activity_comment__1, null);
+
         mGlideRequestManager = Glide.with(this);
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
@@ -182,12 +185,22 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        con.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 
+                if (!con.canScrollVertically(-1)) {
+
+                } else if (!con.canScrollVertically(1)) {
+
+                    commentsetting(endat);
+                } else {
+
+                }
+
+            }
+        });
     }
-
-
-
-
         public void commentsetting(int endat){
         db.collection("user_store").document("TrustOne").collection("Comment").orderBy("TIME", Query.Direction.DESCENDING)
                 .limit(endat).startAt(startat).endAt("20180809185359002")
@@ -200,6 +213,11 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String date_s = (String) document.get("TIME");
 
+                         //       QuerySnapshot documentSnapshots = task.getResult();
+                         //       listvisible = task.getResult().getDocuments().get(documentSnapshots.size()-1);
+
+
+
                                 SimpleDateFormat dt = new SimpleDateFormat("yyyyMMddHHmmssFFF");
                                 Date date = null;
                                 try {
@@ -210,27 +228,36 @@ public class fgm_comment extends Fragment implements View.OnClickListener{
                                 SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
                                 sub2 n_layout = new sub2(getActivity().getApplicationContext(), v);
-                                con.addView(n_layout);
-                                TextView tv_comment = con.getChildAt(i).findViewById(R.id.tv_comment_sub2);
-                                ImageView img_comment = con.getChildAt(i).findViewById(R.id.imageView_sub2);
-                                TextView tv_name_sub = con.getChildAt(i).findViewById(R.id.tv_name_sub);
-                                RatingBar ratingBar_sub = con.getChildAt(i).findViewById(R.id.ratingBar_sub);
-                                TextView tv_time_comment = con.getChildAt(i).findViewById(R.id.tv_time_comment);
+
+//                                TextView tv_comment = con.getChildAt(i).findViewById(R.id.tv_comment_sub2);
+//                                ImageView img_comment = con.getChildAt(i).findViewById(R.id.imageView_sub2);
+//                                TextView tv_name_sub = con.getChildAt(i).findViewById(R.id.tv_name_sub);
+//                                RatingBar ratingBar_sub = con.getChildAt(i).findViewById(R.id.ratingBar_sub);
+//                                TextView tv_time_comment = con.getChildAt(i).findViewById(R.id.tv_time_comment);
 
                                 StorageReference pathReference = storageRef.child((String) document.get("PHOTO"));
-                                tv_name_sub.setText((String) document.get("ID"));
-                                ratingBar_sub.setRating(Float.valueOf((String) document.get("STAR")));
-                                tv_comment.setText((String) document.get("COMMENT"));
+//                                tv_name_sub.setText((String) document.get("ID"));
+//                                ratingBar_sub.setRating(Float.valueOf((String) document.get("STAR")));
+//                                tv_comment.setText((String) document.get("COMMENT"));
                                 startat = (String)document.get("TIME");
                                 double tmp = Double.valueOf(startat)-1;
                                 NumberFormat formatter = new DecimalFormat("###.########");
                                 startat = formatter.format(tmp);
-                                tv_time_comment.setText(dt1.format(date) + "작성");
-                                mGlideRequestManager
-                                        .using(new FirebaseImageLoader())
-                                        .load(pathReference)
-                                        .into(img_comment);
+                                dataList.add(new CardItem((String) document.get("COMMENT"),(String) document.get("ID"),dt1.format(date) + "작성"
+                                ,pathReference,Float.valueOf((String) document.get("STAR"))));
+
+
+//                                tv_time_comment.setText(dt1.format(date) + "작성");
+//                                mGlideRequestManager
+//                                        .using(new FirebaseImageLoader())
+//                                        .load(pathReference)
+//                                        .into(img_comment);
                                 //                      System.out.println("imageview2" + pathReference.getPath() + img_comment.getTransitionName());
+
+                                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                                con.setLayoutManager(layoutManager);
+                                MyRecyclerAdapter adapter = new MyRecyclerAdapter(dataList);
+                                con.setAdapter(adapter);
                                 i++;
                             }
                         } else {

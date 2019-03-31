@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipe_refresh_wrapper"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,7 +12,7 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minHeight="650dp">
+        android:minHeight="720dp">
 
 
         <EditText
@@ -59,10 +54,10 @@
             android:layout_width="77dp"
             android:layout_height="20dp"
             android:layout_gravity="left"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:isIndicator="false"
             android:max="5"
@@ -80,10 +75,10 @@
             android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -125,64 +120,57 @@
 
             <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/button3"
-                app:bootstrapBrand="success"
-                app:roundedCorners="true"
-                app:showOutline="true"
+                style="@style/wrapping_button"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                style="@style/wrapping_button"
                 android:drawableStart="@drawable/blue_camera"
-
                 android:text="사진첨부"
+                app:bootstrapBrand="success"
                 app:layout_constraintBottom_toBottomOf="parent"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.669"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/scrollView2"
-                app:layout_constraintVertical_bias="0.0" />
-
+                app:layout_constraintVertical_bias="0.0"
+                app:roundedCorners="true"
+                app:showOutline="true" />
 
 
             <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/button2"
+                style="@style/wrapping_button"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                app:roundedCorners="true"
 
                 android:paddingRight="2dp"
-                app:bootstrapBrand="success"
                 android:text="댓글 달기"
-                style="@style/wrapping_button"
                 android:textSize="14sp"
+                app:bootstrapBrand="success"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/button3"
-                app:layout_constraintTop_toBottomOf="@+id/scrollView2"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                app:roundedCorners="true" />
         </LinearLayout>
 
 
-        <LinearLayout
-            android:id="@+id/con"
-            android:layout_width="352dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-
-            android:layout_marginBottom="8dp"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:orientation="vertical"
+            android:layout_marginBottom="8dp"
+            tools:listitem="@layout/sub2"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-            app:layout_constraintVertical_bias="0.028"></LinearLayout>
-
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
 
     </android.support.constraint.ConstraintLayout>
 
 </ScrollView>
-</com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>

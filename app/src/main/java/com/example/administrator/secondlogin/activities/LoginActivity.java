@@ -126,10 +126,15 @@ public class LoginActivity extends AppCompatActivity implements
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                System.out.println("190331_s");
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+                System.out.println("google token ---> " + account.getIdToken());
 
             } catch (ApiException e) {
+                System.out.println("190331_e"+e.getMessage().toString());
+                System.out.println("190331_e"+e.toString());
+
             }
         }
     }
